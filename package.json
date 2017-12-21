@@ -1,0 +1,24 @@
+{
+  "name": "",
+  "version": "",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "lodash.curry": "^4.1.1"
+  },
+  "devDependencies": {
+    "@types/core-js": "^0.9.43",
+    "@types/lodash": "^4.14.91",
+    "@types/webspeechapi": "0.0.28",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-preset-env": "^1.6.1",
+    "core-js": "^2.5.3",
+    "path": "^0.12.7",
+    "ts-loader": "^3.2.0",
+    "webpack": "^3.10.0"
+  },
+  "scripts": {
+    "build": "babel src -d lib",
+    "webpack": "webpack"
+  }
+}
