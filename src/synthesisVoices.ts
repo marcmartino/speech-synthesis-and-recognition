@@ -5,13 +5,22 @@ interface VoiceFilterOptions {
     localService?: boolean;
     default?: boolean;
 }
-let voices: SpeechSynthesisVoice[] = window.speechSynthesis.getVoices();
-let voicesLoaded: boolean = false;
 
-window.speechSynthesis.onvoiceschanged = function(): void {
-    voices = window.speechSynthesis.getVoices();
-    voicesLoaded = true;
-};
+interface VoiceFinder {
+    init: Promise<void>;
+    getVoicesByFilter: () => SpeechSynthesisVoice[];
+    getVoicesById: () => SpeechSynthesisVoice[];
+    randVoiceFunc: () => () => SpeechSynthesisVoice;
+}
+
+const init = new Promise((resolve, reject) => {
+    window.speechSynthesis.onvoiceschanged = (): void => {
+        resolve();
+    };
+});
+
+
+let voices: SpeechSynthesisVoice[] = window.speechSynthesis.getVoices();
 
 const getVoicesByFilter = (opts: VoiceFilterOptions = {lang: "es"},
     context: SpeechSynthesisVoice[] = voices): SpeechSynthesisVoice[] => 
@@ -23,7 +32,7 @@ const getVoicesByFilter = (opts: VoiceFilterOptions = {lang: "es"},
 const getVoicesById = (ids: number[], context: SpeechSynthesisVoice[] = voices): SpeechSynthesisVoice[] => 
     context.filter((voice, index) => ids.includes(index));
 
-const randVoiceFunc = (voiceList: SpeechSynthesisVoice[]) => 
+const randVoiceFunc = (voiceList: SpeechSynthesisVoice[]) =>
     (): SpeechSynthesisVoice => voiceList[Math.floor(Math.random() * voiceList.length)];
 
-export { getVoicesByFilter, getVoicesById, randVoiceFunc };
+export { init, getVoicesByFilter, getVoicesById, randVoiceFunc };

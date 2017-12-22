@@ -1,0 +1,7 @@
+#JSGF V1.0;
+
+grammar Greeting;
+
+public <Greeting> = <greeting>;
+
+<greeting> = ( hey | hello | sup | howdy );
