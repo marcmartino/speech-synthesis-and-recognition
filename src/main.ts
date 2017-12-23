@@ -1,5 +1,5 @@
-import * as voices from './synthesisVoices';
-import { speak } from './synthesisSpeak';
+import * as voices from './modules/synthesisVoices';
+import { speak } from './modules/synthesisSpeak';
 
 setTimeout((): void => {
     //console.log(voices);
