@@ -15,6 +15,7 @@ interface VoiceFinder {
 
 const init = new Promise((resolve, reject) => {
     window.speechSynthesis.onvoiceschanged = (): void => {
+        voices = window.speechSynthesis.getVoices();
         resolve();
     };
 });
