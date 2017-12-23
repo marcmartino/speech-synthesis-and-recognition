@@ -6,20 +6,12 @@ interface VoiceFilterOptions {
     default?: boolean;
 }
 
-interface VoiceFinder {
-    init: Promise<void>;
-    getVoicesByFilter: () => SpeechSynthesisVoice[];
-    getVoicesById: () => SpeechSynthesisVoice[];
-    randVoiceFunc: () => () => SpeechSynthesisVoice;
-}
-
-const init = new Promise((resolve, reject) => {
+const isReady = new Promise((resolve, reject) => {
     window.speechSynthesis.onvoiceschanged = (): void => {
         voices = window.speechSynthesis.getVoices();
         resolve();
     };
 });
-
 
 let voices: SpeechSynthesisVoice[] = window.speechSynthesis.getVoices();
 
@@ -36,4 +28,4 @@ const getVoicesById = (ids: number[], context: SpeechSynthesisVoice[] = voices):
 const randVoiceFunc = (voiceList: SpeechSynthesisVoice[]) =>
     (): SpeechSynthesisVoice => voiceList[Math.floor(Math.random() * voiceList.length)];
 
-export { init, getVoicesByFilter, getVoicesById, randVoiceFunc };
+export { isReady, getVoicesByFilter, getVoicesById, randVoiceFunc };
