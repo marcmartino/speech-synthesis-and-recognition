@@ -1,0 +1,1 @@
+#JSGF V1.0;grammar Generic;public <Generic> = <generic>;<generic> = ( hey | hello | sup | howdy );

@@ -1,11 +1,3 @@
-interface VoiceFilterOptions {
-    voiceURI?: string;
-    name?: string;
-    lang?: string;
-    localService?: boolean;
-    default?: boolean;
-}
-
 const isReady = new Promise((resolve, reject) => {
     window.speechSynthesis.onvoiceschanged = (): void => {
         voices = window.speechSynthesis.getVoices();
@@ -15,6 +7,7 @@ const isReady = new Promise((resolve, reject) => {
 
 let voices: SpeechSynthesisVoice[] = window.speechSynthesis.getVoices();
 
+//TODO: voices will fail/be empty before is ready resolves
 const getVoicesByFilter = (opts: VoiceFilterOptions = {lang: "es"},
     context: SpeechSynthesisVoice[] = voices): SpeechSynthesisVoice[] => 
         context.filter((voice: SpeechSynthesisVoice) => 
@@ -29,3 +22,11 @@ const randVoiceFunc = (voiceList: SpeechSynthesisVoice[]) =>
     (): SpeechSynthesisVoice => voiceList[Math.floor(Math.random() * voiceList.length)];
 
 export { isReady, getVoicesByFilter, getVoicesById, randVoiceFunc };
+
+interface VoiceFilterOptions {
+    voiceURI?: string;
+    name?: string;
+    lang?: string;
+    localService?: boolean;
+    default?: boolean;
+}
