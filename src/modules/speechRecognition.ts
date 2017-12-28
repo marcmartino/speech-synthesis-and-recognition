@@ -1,5 +1,6 @@
 import { removeAccents } from './languageTools';
 import { indexOf } from 'lodash';
+// import { curry } from '@typed/curry';
 
 type LangShortCode = ('en-AU' | 'en-CA' | 'en-GH' | 'en-GB' | 'en-IN' | 'en-IE' | 'en-KE' | 'en-NZ' | 'en-NG' | 'en-PH' | 'en-ZA' | 'en-TZ' | 'en-US' | 'es-AR' | 'es-BO' | 'es-CL' | 'es-CO' | 'es-CR' | 'es-EC' | 'es-SV' | 'es-ES' | 'es-US' | 'es-GT' | 'es-HN' | 'es-MX' | 'es-NI' | 'es-PA' | 'es-PY' | 'es-PE' | 'es-PR' | 'es-DO' | 'es-UY' | 'es-VE');
 
@@ -12,8 +13,7 @@ const listen = (lang: LangShortCode = 'en-US') => (grammars: string[] = []) => (
     recognition.grammars = genGrammarList(grammars);
 
     recognition.start();
-    recognition.onresult = (e) => {
-    
+    recognition.onresult = (e) => {    
       if (condition(e)) {
         console.log(`${e.results[0][0].transcript} found`);
         resolve(e);
@@ -22,7 +22,8 @@ const listen = (lang: LangShortCode = 'en-US') => (grammars: string[] = []) => (
         reject(e);
       }
     };
-    recognition.onerror = reject;
+
+    recognition.onnomatch = recognition.onerror = reject;
   });
 
 const justListen = (lang: LangShortCode = 'en-US') => listen(lang)();

@@ -1,7 +1,7 @@
 function removeAccents(str: string): string {
   var accents    = 'ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž';
   var accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
-  var split = str.split('');
+  var split = str.toLowerCase().split('');
   var strLen = split.length;
   var i, x;
   for (i = 0; i < strLen; i++) {
@@ -9,7 +9,7 @@ function removeAccents(str: string): string {
       split[i] = accentsOut[x];
     }
   }
-  return split.join('').toLowerCase();
+  return split.join('');
 }
 
 export { removeAccents };
