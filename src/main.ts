@@ -11,15 +11,17 @@ async function main() {
     voices.getVoicesByFilter({lang: 'es'})));
   const enSpeak = speak(voices.randVoiceFunc(
     voices.getVoicesByFilter({ lang: "en"})));
-  const esListen: Function = listenForWords("es-US");
-  const enListen: Function = listenForWords("en-US");
+  const esListen = listenForWords("es-US");
+  const enListen = listenForWords("en-US");
 
   
   const promptCardDefs = transcripts.definition({nativeSpeak: enSpeak, learnedSpeak: esSpeak, nativeListen: enListen});
+  const promptCardReverseDefs = transcripts.reverseDefinition({nativeSpeak: enSpeak, learnedSpeak: esSpeak, learnedListen: esListen});
 
-  promptCardDefs(testCards[0])
-    .then(() => promptCardDefs(testCards[1]))
-    .then(() => promptCardDefs(testCards[2]))
+  promptCardReverseDefs(testCards[0])
+    /*.then(() => promptCardDefs(testCards[1]))
+    .then(() => promptCardReverseDefs(testCards[2]))
+    .then(() => esSpeak('Has acabado con todo tus palabras.'))*/
     .catch(() => console.log('cards failed'));
 
 }

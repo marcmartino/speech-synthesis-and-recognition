@@ -23,7 +23,9 @@ const listen = (lang: LangShortCode = 'en-US') => (grammars: string[] = []) => (
       }
     };
 
-    recognition.onnomatch = recognition.onerror = reject;
+    recognition.onnomatch = reject;
+    recognition.onerror = reject;
+    recognition.onend = reject;
   });
 
 const justListen = (lang: LangShortCode = 'en-US') => listen(lang)();

@@ -1,16 +1,7 @@
-import { Card } from "./../types/flashCardTypes";
+//import { Card } from "./../types/flashCardTypes";
 
 const cards: FlashCards.Card[] = [
-  {
-    "phrase": "a pesar de que",
-    "definition": "despite the fact that",
-    "sentences": [
-        {
-            "sentence": "yo vi un pandita muy lindo en el zologico.",
-            "translated": "I saw a little panda really cute at the zoo"
-        }
-    ]
-  },{
+{
     "phrase": "hablar",
     "definition": "to speak, to talk",
     "sentences": [

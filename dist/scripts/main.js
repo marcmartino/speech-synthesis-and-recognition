@@ -4917,7 +4917,7 @@ var transcripts = __webpack_require__(145);
 var testCards_1 = __webpack_require__(346);
 function main() {
     return __awaiter(this, void 0, void 0, function () {
-        var esSpeak, enSpeak, esListen, enListen, promptCardDefs;
+        var esSpeak, enSpeak, esListen, enListen, promptCardDefs, promptCardReverseDefs;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -4929,11 +4929,8 @@ function main() {
                     esListen = speechRecognition_1.listenForWords("es-US");
                     enListen = speechRecognition_1.listenForWords("en-US");
                     promptCardDefs = transcripts.definition({ nativeSpeak: enSpeak, learnedSpeak: esSpeak, nativeListen: enListen });
-                    promptCardDefs(testCards_1.default[0]).then(function () {
-                        return promptCardDefs(testCards_1.default[1]);
-                    }).then(function () {
-                        return promptCardDefs(testCards_1.default[2]);
-                    }).catch(function () {
+                    promptCardReverseDefs = transcripts.reverseDefinition({ nativeSpeak: enSpeak, learnedSpeak: esSpeak, learnedListen: esListen });
+                    promptCardReverseDefs(testCards_1.default[0]).catch(function () {
                         return console.log('cards failed');
                     });
                     return [2 /*return*/];
@@ -5009,10 +5006,11 @@ var speak = function speak(voiceFunc) {
             window.speechSynthesis.speak(utterance);
             utterance.onend = function (e) {
                 console.log('utterance completed');
+                clearTimeout(cutoffTimeoutId);
                 return resolve(e);
             };
             // TODO: terrible hack to work around chrome sometimes not triggering onend
-            timers_1.setTimeout(function () {
+            var cutoffTimeoutId = timers_1.setTimeout(function () {
                 resolve();
                 speechSynthesis.cancel();
             }, sentence.length * 150);
@@ -5309,7 +5307,9 @@ var listen = function listen(lang) {
                         reject(e);
                     }
                 };
-                recognition.onnomatch = recognition.onerror = reject;
+                recognition.onnomatch = reject;
+                recognition.onerror = reject;
+                recognition.onend = reject;
             });
         };
     };
@@ -22537,7 +22537,8 @@ module.exports = function(module) {
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var ramda_1 = __webpack_require__(146);
-var askForSentence = ['Can I have a sentence?', 'Can you use it in a sentence?', 'sentence'];
+var askForSentence = ['Can I have a sentence?', 'can i get a sentence', 'Can you use it in a sentence?', 'sentence'];
+var askForSentenceEs = ['una oración', 'oración'];
 var definition = function definition(_a) {
     var nativeSpeak = _a.nativeSpeak,
         learnedSpeak = _a.learnedSpeak,
@@ -22546,7 +22547,7 @@ var definition = function definition(_a) {
         return learnedSpeak("\xBFQu\xE9 significa '" + card.phrase + "'?").then(function () {
             return nativeListen(ramda_1.concat(askForSentence, wordDefToResponseOptions(card.definition)));
         }).then(function (e) {
-            if (askForSentence.indexOf(e[0][0].transcript) > -1) {
+            if (askForSentence.indexOf(e.results[0][0].transcript) > -1) {
                 return learnedSpeak(card.sentences[0].sentence).then(function () {
                     return definition({ nativeSpeak: nativeSpeak, learnedSpeak: learnedSpeak, nativeListen: nativeListen })(card);
                 });
@@ -22558,12 +22559,35 @@ var definition = function definition(_a) {
     };
 };
 exports.definition = definition;
+var reverseDefinition = function reverseDefinition(_a) {
+    var nativeSpeak = _a.nativeSpeak,
+        learnedSpeak = _a.learnedSpeak,
+        learnedListen = _a.learnedListen;
+    return function (card) {
+        return nativeSpeak("What is the word or phrase that means '" + card.definition + "'?").then(function () {
+            return learnedListen(ramda_1.concat(askForSentenceEs, wordDefToResponseOptions(card.phrase)));
+        }).then(function (e) {
+            if (askForSentenceEs.indexOf(e.results[0][0].transcript) > -1) {
+                return learnedSpeak(sentenceToCloze(card.phrase, card.sentences[0].sentence)).then(function () {
+                    return reverseDefinition({ nativeSpeak: nativeSpeak, learnedSpeak: learnedSpeak, learnedListen: learnedListen })(card);
+                });
+            }
+            return learnedSpeak('¡Buen trabajo!');
+        }).catch(function () {
+            return learnedSpeak('Inténtalo de nuevo.'), reverseDefinition({ nativeSpeak: nativeSpeak, learnedSpeak: learnedSpeak, learnedListen: learnedListen })(card);
+        });
+    };
+};
+exports.reverseDefinition = reverseDefinition;
 // TODO: would be nice to add 'to something or to something else' combinations into this array
 var wordDefToResponseOptions = ramda_1.compose(ramda_1.flatten, ramda_1.map(function (defOption) {
     return defOption.indexOf('to ') === 0 ? [defOption, defOption.substr(3)] : [defOption];
 }),
 //trim,
 ramda_1.split(','));
+var sentenceToCloze = function sentenceToCloze(phrase, sentence) {
+    return ramda_1.replace(phrase, ",,,,,", sentence);
+};
 
 /***/ }),
 /* 146 */
@@ -31273,16 +31297,10 @@ var zipWith = /*#__PURE__*/Object(__WEBPACK_IMPORTED_MODULE_0__internal_curry3__
 
 "use strict";
 
+//import { Card } from "./../types/flashCardTypes";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var cards = [{
-    "phrase": "a pesar de que",
-    "definition": "despite the fact that",
-    "sentences": [{
-        "sentence": "yo vi un pandita muy lindo en el zologico.",
-        "translated": "I saw a little panda really cute at the zoo"
-    }]
-}, {
     "phrase": "hablar",
     "definition": "to speak, to talk",
     "sentences": [{

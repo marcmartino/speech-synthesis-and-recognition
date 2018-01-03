@@ -12,11 +12,12 @@ const speak = (voiceFunc: () => SpeechSynthesisVoice) => (sentence: string): Pro
         
         utterance.onend = (e: SpeechSynthesisEvent) => {
             console.log('utterance completed');
+            clearTimeout(cutoffTimeoutId);
             return resolve(e);
         }
 
         // TODO: terrible hack to work around chrome sometimes not triggering onend
-        setTimeout(() => {
+        const cutoffTimeoutId = setTimeout(() => {
             resolve();
             speechSynthesis.cancel();
         }, sentence.length * 150);
